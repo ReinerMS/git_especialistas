@@ -9,24 +9,41 @@ export default function ProvinceFilterPage() {
   const navigate = useNavigate();
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [selectedCanton, setSelectedCanton] = useState(null);
+  const [selectedArea, setSelectedArea] = useState(null);
+  const [selectedSpecialization, setSelectedSpecialization] = useState(null);
   const [users, setUsers] = useState([]);
   const [provincias, setProvincias] = useState([]);
   const [areasTrabajo, setAreasTrabajo] = useState([]);
-  const [, setSelectedArea] = useState(null);
 
   useEffect(() => {
-    setUsers(GetUsers() || []);
-    setProvincias(GetProvincia() || []);
-    setAreasTrabajo(GetArea() || []);
+    const fetchData = async () => {
+      try {
+        const usersData = await GetUsers();
+        const provinciasData = await GetProvincia();
+        const areasData = await GetArea();
+
+        setUsers(usersData || []);
+        setProvincias(provinciasData || []);
+        setAreasTrabajo(areasData || []);
+      } catch (error) {
+        console.error("Error al obtener los datos:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   // Obtener datos de la provincia seleccionada y sus cantones
   const selectedProvinceData =
-    provincias.find((p) => p.provincia === selectedProvince) || {};
-  const filteredCantones = selectedProvinceData.cantones || [];
+    provincias.find((p) => p.provincia === selectedProvince) || { cantones: [] };
+  const filteredCantones = selectedProvinceData.cantones;
 
   const goBack = () => {
-    if (selectedCanton) {
+    if (selectedSpecialization) {
+      setSelectedSpecialization(null);
+    } else if (selectedArea) {
+      setSelectedArea(null);
+    } else if (selectedCanton) {
       setSelectedCanton(null);
     } else if (selectedProvince) {
       setSelectedProvince(null);
@@ -37,14 +54,73 @@ export default function ProvinceFilterPage() {
 
   const getStepTitle = () => {
     if (!selectedProvince) {
-      return "Selecciona una provincia";
+      return "Seleccione una provincia";
     } else if (!selectedCanton) {
-      return `Selecciona un cantón en ${selectedProvince}`;
+      return `Seleccione un cantón en ${selectedProvince}`;
+    } else if (!selectedArea) {
+      return `Seleccione un área de trabajo en ${selectedCanton}`;
+    } else if (!selectedSpecialization) {
+      return `Seleccione una especialización en ${selectedArea}`;
     } else {
-      return `Selecciona un área de trabajo en ${selectedCanton}`;
+      return "Resultados";
     }
   };
 
+  // Función para renderizar las tarjetas de especialización sin duplicados
+  const renderSpecializations = () => {
+    // Filtrar usuarios según provincia, cantón y área seleccionados
+    const filteredUsers = users.filter(
+      (user) =>
+        user.provincia === selectedProvince &&
+        user.canton === selectedCanton &&
+        user.areaTrabajo.includes(selectedArea)
+    );
+    // Homologar especializaciones eliminando duplicados
+    const uniqueSpecializationsMap = new Map();
+    filteredUsers.forEach((user) => {
+      const normalized = String(user.especializacion).trim().toLowerCase();
+      if (!uniqueSpecializationsMap.has(normalized)) {
+        uniqueSpecializationsMap.set(normalized, String(user.especializacion).trim());
+      }
+    });
+    const especializaciones = Array.from(uniqueSpecializationsMap.entries()).map(
+      ([normalized, original]) => ({
+        normalized,
+        original,
+      })
+    );
+
+    return especializaciones.map((esp, index) => {
+      const count = filteredUsers.filter(
+        (user) =>
+          String(user.especializacion).trim().toLowerCase() === esp.normalized
+      ).length;
+      return (
+        <div
+          key={`${esp.normalized}-${index}`}
+          onClick={() => {
+            setSelectedSpecialization(esp.original);
+            navigate(
+              `/resultados?provincia=${selectedProvince}&canton=${selectedCanton}&area=${selectedArea}&especializacion=${esp.original}`
+            );
+          }}
+          className="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition hover:scale-105"
+        >
+          <div className="p-6">
+            <h2 className="text-xl font-semibold text-center text-gray-800 mb-2">
+              {esp.original}
+            </h2>
+            <div className="text-center text-sm text-gray-600 mb-4">
+              {count} especialista{count !== 1 && "s"}
+            </div>
+            <button className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center">
+              Seleccionar
+            </button>
+          </div>
+        </div>
+      );
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 flex flex-col items-center justify-center py-10">
@@ -58,27 +134,34 @@ export default function ProvinceFilterPage() {
             <ChevronLeft size={20} className="mr-1" />
             Volver
           </button>
-          
+
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             {getStepTitle()}
           </h1>
           <p className="text-gray-600 max-w-lg mx-auto">
             {!selectedProvince
-              ? "Encuentra especialistas según su ubicación geográfica."
+              ? "Encuentre especialistas según su ubicación geográfica."
               : !selectedCanton
-              ? "Selecciona el cantón donde deseas encontrar especialistas."
-              : "Elige el área de especialidad que necesitas."}
+              ? "Seleccione el cantón donde desea encontrar especialistas."
+              : !selectedArea
+              ? "Seleccione el área de especialidad que necesita."
+              : "Elija la especialización que requiere."}
           </p>
         </div>
 
         {/* Contenido principal - Selección por pasos */}
         {!selectedProvince ? (
-          // Tarjetas de provincias: filtrar para mostrar solo las que tienen al menos 1 especialista
+          // Tarjetas de provincias
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {provincias
-              .filter((prov) => users.filter(user => user.provincia === prov.provincia).length >= 1)
+              .filter(
+                (prov) =>
+                  users.filter((user) => user.provincia === prov.provincia).length >= 1
+              )
               .map((prov) => {
-                const count = users.filter(user => user.provincia === prov.provincia).length;
+                const count = users.filter(
+                  (user) => user.provincia === prov.provincia
+                ).length;
                 return (
                   <div
                     key={prov.provincia}
@@ -106,7 +189,7 @@ export default function ProvinceFilterPage() {
               })}
           </div>
         ) : !selectedCanton ? (
-          // Tarjetas de cantones: filtrar para mostrar solo los cantones con al menos 1 especialista
+          // Tarjetas de cantones
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {filteredCantones
               .filter((canton) =>
@@ -138,9 +221,7 @@ export default function ProvinceFilterPage() {
                       <div className="text-center text-sm text-gray-600 mb-4">
                         {count} especialista{count !== 1 && "s"}
                       </div>
-                      <button
-                        className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center"
-                      >
+                      <button className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center">
                         <Search size={16} className="mr-2" />
                         Seleccionar
                       </button>
@@ -149,8 +230,8 @@ export default function ProvinceFilterPage() {
                 );
               })}
           </div>
-        ) : (
-          // Tarjetas de áreas de trabajo: ahora se verifica si el arreglo de areaTrabajo del usuario incluye el área actual
+        ) : !selectedArea ? (
+          // Tarjetas de áreas de trabajo
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {areasTrabajo
               .filter((area) =>
@@ -171,12 +252,7 @@ export default function ProvinceFilterPage() {
                 return (
                   <div
                     key={`${area.area}-${index}`}
-                    onClick={() => {
-                      setSelectedArea(area.area);
-                      navigate(
-                        `/resultados?provincia=${selectedProvince}&canton=${selectedCanton}&area=${area.area}`
-                      );
-                    }}
+                    onClick={() => setSelectedArea(area.area)}
                     className="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition hover:scale-105"
                   >
                     <div className="h-40 relative">
@@ -193,22 +269,25 @@ export default function ProvinceFilterPage() {
                       <div className="text-center text-sm text-gray-600 mb-4">
                         {count} especialista{count !== 1 && "s"}
                       </div>
-                      <button
-                        className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center"
-                      >
-                        Seleccionar especialistas
+                      <button className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center">
+                        Seleccionar área
                       </button>
                     </div>
                   </div>
                 );
               })}
           </div>
-        )}
+        ) : !selectedSpecialization ? (
+          // Tarjetas de especialización
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            {renderSpecializations()}
+          </div>
+        ) : null}
 
         {/* Texto informativo */}
         <div className="mt-10 text-center">
           <p className="text-gray-500 text-sm">
-            Nuestros especialistas están certificados y listos para ayudarte en tu proyecto.
+            Nuestros especialistas están certificados y listos para ayudarle en su proyecto.
           </p>
         </div>
       </div>

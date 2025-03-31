@@ -10,10 +10,10 @@ export default function FiltroEspecialistas() {
         {/* Encabezado */}
         <div className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-            ¿Cómo encontrar un especialista?
+            ¿Cómo encontrar al especialista adecuado?
           </h1>
           <p className="text-gray-600 max-w-lg mx-auto">
-            Selecciona un método de búsqueda para encontrar al especialista ideal para su proyecto.
+            Por favor, seleccione un método de búsqueda para encontrar al especialista ideal para su proyecto.
           </p>
         </div>
 
@@ -28,9 +28,11 @@ export default function FiltroEspecialistas() {
               <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full mx-auto mb-4">
                 <MapPin size={24} className="text-blue-600" />
               </div>
-              <h2 className="text-xl font-semibold text-center text-gray-800 mb-2">Filtro por lugar</h2>
+              <h2 className="text-xl font-semibold text-center text-gray-800 mb-2">
+                Filtro por ubicación
+              </h2>
               <p className="text-gray-600 text-center mb-4">
-                Encuentre especialistas según su ubicación geográfica.
+                Encuentre a los especialistas de acuerdo a su ubicación geográfica.
               </p>
               <button 
                 className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center"
@@ -51,9 +53,11 @@ export default function FiltroEspecialistas() {
               <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full mx-auto mb-4">
                 <Briefcase size={24} className="text-blue-600" />
               </div>
-              <h2 className="text-xl font-semibold text-center text-gray-800 mb-2">Filtro por área de trabajo</h2>
+              <h2 className="text-xl font-semibold text-center text-gray-800 mb-2">
+                Filtro por área profesional
+              </h2>
               <p className="text-gray-600 text-center mb-4">
-              Encuentre su especialistas según su especialidad o área profesional.
+                Encuentre a los especialistas según su especialidad o área profesional.
               </p>
               <button 
                 className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center"

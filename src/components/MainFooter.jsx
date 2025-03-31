@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="flex flex-col items-center text-center">
           <img
             className="h-12 m-3 rounded"
-            src="/imgs/logoBlanco.png"
+            src="./imgs/logoBlanco.png"
             alt="Logo"
           />
           <p className="text-sm">

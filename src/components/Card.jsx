@@ -21,7 +21,7 @@ const Card = ({
           className="object-cover rounded-full h-36 w-36 mx-auto absolute top-[-130px] left-1/2 transform -translate-x-1/2"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = "/imgs/noimg.jpg";
+            e.target.src = "./imgs/noimg.jpg";
           }}
         />
         {/* Contenido */}
@@ -71,12 +71,12 @@ const Card = ({
                 imageCertificado.map((certId, index) => (
                   <img
                     key={index}
-                    src={`/certificados/${certId}.png`}
+                    src={`./certificados/${certId}.png`}
                     alt={`Certificado ${certId}`}
                     className="h-8 w-8 rounded-full"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = "/imgs/noimg.jpg";
+                      e.target.src = "./imgs/noimg.jpg";
                     }}
                   />
                 ))

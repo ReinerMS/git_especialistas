@@ -21,10 +21,10 @@ const Header = () => {
           <div className="flex items-center">
             <Link to={"/"}>
             {/* Logo normal para pantallas grandes */}
-            <img src="/imgs/logoAzul.png" alt="Logo" className="hidden lg:block h-16" />
+            <img src="./imgs/logoAzul.png" alt="Logo" className="hidden lg:block h-16" />
               {/* Favicon para pantallas móviles */}
               <img
-                src="/imgs/faviconb.png"
+                src="./imgs/faviconb.png"
                 alt="Favicon"
                 className="block lg:hidden h-10"
               />

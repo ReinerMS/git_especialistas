@@ -2,7 +2,7 @@ export function GetProvincia() {
   return [
     {
       provincia: "San José",
-      imagen: "/imgs/provincia/san_jose.png",
+      imagen: "./imgs/provincia/san_jose.png",
       cantones: [
         { canton: "San José" },
         { canton: "Escazú" },
@@ -28,7 +28,7 @@ export function GetProvincia() {
     },
     {
       provincia: "Alajuela",
-      imagen: "/imgs/provincia/alajuela.png",
+      imagen: "./imgs/provincia/alajuela.png",
       cantones: [
         { canton: "Alajuela" },
         { canton: "San Ramón" },
@@ -49,7 +49,7 @@ export function GetProvincia() {
     },
     {
       provincia: "Cartago",
-      imagen: "/imgs/provincia/cartago.png",
+      imagen: "./imgs/provincia/cartago.png",
       cantones: [
         { canton: "Cartago" },
         { canton: "Paraíso" },
@@ -63,7 +63,7 @@ export function GetProvincia() {
     },
     {
       provincia: "Heredia",
-      imagen: "/imgs/provincia/heredia.png",
+      imagen: "./imgs/provincia/heredia.png",
       cantones: [
         { canton: "Heredia" },
         { canton: "Barva" },
@@ -78,7 +78,7 @@ export function GetProvincia() {
     },
     {
       provincia: "Guanacaste",
-      imagen: "/imgs/provincia/guanacaste.png",
+      imagen: "./imgs/provincia/guanacaste.png",
       cantones: [
         { canton: "Liberia" },
         { canton: "Nicoya" },
@@ -95,7 +95,7 @@ export function GetProvincia() {
     },
     {
       provincia: "Puntarenas",
-      imagen: "/imgs/provincia/puntarenas.png",
+      imagen: "./imgs/provincia/puntarenas.png",
       cantones: [
         { canton: "Puntarenas" },
         { canton: "Esparza" },
@@ -112,7 +112,7 @@ export function GetProvincia() {
     },
     {
       provincia: "Limón",
-      imagen: "/imgs/provincia/limon.png",
+      imagen: "./imgs/provincia/limon.png",
       cantones: [
         { canton: "Limón" },
         { canton: "Pococí" },
